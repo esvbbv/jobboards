@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Now Hiring</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: white;
+  color: #003A8F;
+  overflow: hidden;
+}
+
+.container {
+  padding: 40px;
+}
+
+h1 {
+  font-size: 60px;
+  margin-bottom: 30px;
+}
+
+.job {
+  font-size: 34px;
+  margin: 25px 0;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.location {
+  font-size: 22px;
+  color: #666;
+}
+
+#jobs {
+  animation: scroll 30s linear infinite;
+}
+
+@keyframes scroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+.qr {
+  position: absolute;
+  right: 40px;
+  bottom: 40px;
+  text-align: center;
+}
+
+.qr img {
+  width: 220px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 20px;
+  left: 40px;
+  font-size: 20px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Now Hiring</h1>
+  <div id="jobs"></div>
+</div>
+
+<div class="qr">
+  <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://jobs.hilton.com/us/en/search-results?uLatitude=38.863398&uLongitude=-77.052799">
+  <p>Scan to Apply</p>
+</div>
+
+<div class="footer">
+  Join Our Team at Hilton
+</div>
+
+<script>
+
+const API_URL = "https://opensheet.elk.sh/1ULM3MYcLT8JmlQj1fnU0N3O8yy4cWPcvOiFhrgTfndA/Jobs";
+
+async function loadJobs() {
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+
+    const container = document.getElementById("jobs");
+    container.innerHTML = "";
+
+    data.forEach(job => {
+      const div = document.createElement("div");
+      div.className = "job";
+
+      div.innerHTML = `
+        ${job.Title || "Job Opening"}
+        <div class="location">${job.Location || ""}</div>
+      `;
+
+      container.appendChild(div);
+    });
+
+    // duplicate for smooth scrolling
+    container.innerHTML += container.innerHTML;
+
+  } catch (e) {
+    document.getElementById("jobs").innerHTML = "Unable to load jobs";
+  }
+}
+
+loadJobs();
+setInterval(loadJobs, 60000); // refresh every 60 sec
+
+</script>
+
+</body>
+</html>
